@@ -10,4 +10,8 @@ public class Board {
 	public boolean isEmpty() {
 		return true;
 	}
+	
+	public void loadFrom(BoardReader reader) {
+		
+	}
 }

@@ -20,4 +20,16 @@ class BoardShould {
 		Board sut = new Board(4);
 		assertEquals(true, sut.isEmpty());
 	}
+	
+	@Test 
+	void set_state_from_source() {
+		Board sut = new Board(4);
+		String data = "oxoo\n"
+				 	+ "ooox\n"
+				 	+ "ooxo\n"
+				 	+ "xooo";
+		BoardReader reader = new MemoryBoardReader(data);
+		sut.loadFrom(reader);
+		assertEquals(false, sut.isEmpty());
+	}
 }
