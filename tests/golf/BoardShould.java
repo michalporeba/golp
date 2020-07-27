@@ -24,12 +24,32 @@ class BoardShould {
 	@Test 
 	void set_state_from_source() {
 		Board sut = new Board(4);
-		String data = "oxoo\n"
-				 	+ "ooox\n"
-				 	+ "ooxo\n"
-				 	+ "xooo";
-		BoardReader reader = new MemoryBoardReader(data);
+		int[][] data = new int[][] {
+				{ 0, 1, 0, 0 },
+				{ 0, 0, 0, 1 },
+				{ 0, 0, 1, 0 },
+				{ 1, 0, 0, 0 },
+		};
+		                 
+		BoardReader reader = new ArrayBoardReader(data);
 		sut.loadFrom(reader);
+		assertEquals(false, sut.isEmpty());
+	}
+	
+	@Test
+	void write_state_out() {
+		Board sut = new Board(4);
+		int[][] data = new int[][] {
+				{ 0, 1, 0, 0 },
+				{ 0, 0, 0, 1 },
+				{ 0, 0, 1, 0 },
+				{ 1, 0, 0, 0 },
+		};
+		BoardReader reader = new ArrayBoardReader(data);
+		BoardWriter writer = new ArrayBoardWriter();
+
+		sut.loadFrom(reader);
+		
 		assertEquals(false, sut.isEmpty());
 	}
 }
