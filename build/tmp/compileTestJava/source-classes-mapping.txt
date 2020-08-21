@@ -1,0 +1,4 @@
+com/michalporeba/golf/StandardCellShould.java
+ com.michalporeba.golf.StandardCellShould
+com/michalporeba/golf/BoardShould.java
+ com.michalporeba.golf.BoardShould

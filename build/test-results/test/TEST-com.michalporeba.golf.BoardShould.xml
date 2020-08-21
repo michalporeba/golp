@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.michalporeba.golf.BoardShould" tests="6" skipped="0" failures="0" errors="0" timestamp="2020-08-21T11:20:16" hostname="fuchur" time="0.065">
+  <properties/>
+  <testcase name="write_state_out()" classname="com.michalporeba.golf.BoardShould" time="0.02"/>
+  <testcase name="set_state_from_source()" classname="com.michalporeba.golf.BoardShould" time="0.001"/>
+  <testcase name="throw_if_size_less_or_equal_zero(int)[1]" classname="com.michalporeba.golf.BoardShould" time="0.017"/>
+  <testcase name="throw_if_size_less_or_equal_zero(int)[2]" classname="com.michalporeba.golf.BoardShould" time="0.001"/>
+  <testcase name="throw_if_size_less_or_equal_zero(int)[3]" classname="com.michalporeba.golf.BoardShould" time="0.001"/>
+  <testcase name="be_empty_to_start_with()" classname="com.michalporeba.golf.BoardShould" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
