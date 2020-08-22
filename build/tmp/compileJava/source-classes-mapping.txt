@@ -1,11 +1,11 @@
 com/michalporeba/golf/Board.java
  com.michalporeba.golf.Board
-com/michalporeba/golf/StandardCell.java
- com.michalporeba.golf.StandardCell
 com/michalporeba/golf/ArrayBoardWriter.java
  com.michalporeba.golf.ArrayBoardWriter
 com/michalporeba/golf/ConweyRulesEngine.java
  com.michalporeba.golf.ConweyRulesEngine
+com/michalporeba/golf/StandardCell.java
+ com.michalporeba.golf.StandardCell
 com/michalporeba/golf/BoardWriter.java
  com.michalporeba.golf.BoardWriter
 com/michalporeba/golf/Cell.java
@@ -18,7 +18,7 @@ com/michalporeba/golf/CellState.java
  com.michalporeba.golf.CellState
 com/michalporeba/golf/RulesEngine.java
  com.michalporeba.golf.RulesEngine
-com/michalporeba/golf/BoardReader.java
- com.michalporeba.golf.BoardReader
 com/michalporeba/golf/ArrayBoardReader.java
  com.michalporeba.golf.ArrayBoardReader
+com/michalporeba/golf/BoardReader.java
+ com.michalporeba.golf.BoardReader
