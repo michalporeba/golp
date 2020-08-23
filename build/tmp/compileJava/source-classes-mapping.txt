@@ -18,9 +18,9 @@ com/michalporeba/golf/ConwayRulesEngine.java
  com.michalporeba.golf.ConwayRulesEngine
 com/michalporeba/golf/CellState.java
  com.michalporeba.golf.CellState
-com/michalporeba/golf/BoardReader.java
- com.michalporeba.golf.BoardReader
-com/michalporeba/golf/RulesEngine.java
- com.michalporeba.golf.RulesEngine
 com/michalporeba/golf/GameOfLife.java
  com.michalporeba.golf.GameOfLife
+com/michalporeba/golf/RulesEngine.java
+ com.michalporeba.golf.RulesEngine
+com/michalporeba/golf/BoardReader.java
+ com.michalporeba.golf.BoardReader
