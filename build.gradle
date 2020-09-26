@@ -7,7 +7,7 @@ plugins {
 
 apply plugin : "java"
 ext {
-    javaMainClass = "com.michalporeba.golf.GameOfLife"
+    javaMainClass = "com.michalporeba.golp.GameOfLife"
 }
 
 application {
@@ -27,11 +27,11 @@ dependencies {
 }
 
 javafx {
-    version = "14"
+    version = "15"
     modules = ['javafx.controls', 'javafx.fxml']
 }
 
-mainClassName = 'com.michalporeba.golf.GameOfLife'
+mainClassName = 'com.michalporeba.golp.GameOfLife'
 
 test {
     useJUnitPlatform()

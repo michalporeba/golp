@@ -1,4 +1,4 @@
-com/michalporeba/golf/StandardCellShould.java
- com.michalporeba.golf.StandardCellShould
-com/michalporeba/golf/BoardShould.java
- com.michalporeba.golf.BoardShould
+com/michalporeba/golp/StandardCellShould.java
+ com.michalporeba.golp.StandardCellShould
+com/michalporeba/golp/BoardShould.java
+ com.michalporeba.golp.BoardShould

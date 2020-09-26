@@ -1,4 +1,4 @@
-package com.michalporeba.golf;
+package com.michalporeba.golp;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -19,12 +19,13 @@ public class Clock {
     }
 
     public void createUiWith(MenuBuilder menuBuilder) {
-        menuBuilder.addOption("Stop", () -> setTempo(0));
-        menuBuilder.addOption("1", () -> setTempo(100));
-        menuBuilder.addOption("2", () -> setTempo(1000));
+        menuBuilder.addOption("Stop", () -> setDelay(0));
+        menuBuilder.addOption("Slow", () -> setDelay(100));
+        menuBuilder.addOption("Medium", () -> setDelay(500));
+        menuBuilder.addOption("Fast", () -> setDelay(1000));
     }
 
-    public void setTempo(int delayInMilliseconds) {
+    public void setDelay(int delayInMilliseconds) {
         if (tick != null) {
             tick.cancel();
             tick = null;

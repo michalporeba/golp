@@ -1,4 +1,4 @@
-package com.michalporeba.golf;
+package com.michalporeba.golp;
 
 public interface BoardReader {
 	public boolean hasNext();
