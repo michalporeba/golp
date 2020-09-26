@@ -3,12 +3,14 @@ package com.michalporeba.golp;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
+import javafx.scene.control.*;
 import javafx.scene.Scene;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+
+import java.util.Dictionary;
 
 public class GameOfLife extends Application {
 
@@ -19,6 +21,7 @@ public class GameOfLife extends Application {
     @Override
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Game of Life");
+
 
         MenuBar menuBar = new MenuBar();
         VBox root = new VBox(menuBar);
@@ -40,10 +43,7 @@ public class GameOfLife extends Application {
 
         @Override
         public void addOption(String action, Clock.ClockCallback callback) {
-            if (clockMenu == null) {
-                clockMenu = new Menu("Clock");
-                menuBar.getMenus().add(clockMenu);
-            }
+            ensureMenuExists();
 
             MenuItem menu = new MenuItem(action);
             menu.setOnAction(new EventHandler<>() {
@@ -53,6 +53,20 @@ public class GameOfLife extends Application {
                 }
             });
             clockMenu.getItems().add(menu);
+        }
+
+        public void addStart(Clock.ClockCallback callback) {
+            addOption("Start", callback);
+        }
+        public void addPause(Clock.ClockCallback callback) {
+            addOption("Pause", callback);
+        }
+
+        private void ensureMenuExists() {
+            if (clockMenu == null) {
+                clockMenu = new Menu("Clock");
+                menuBar.getMenus().add(clockMenu);
+            }
         }
     }
 }

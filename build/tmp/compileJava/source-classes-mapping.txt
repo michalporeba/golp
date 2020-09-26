@@ -15,19 +15,21 @@ com/michalporeba/golp/Cell.java
 com/michalporeba/golp/Clock.java
  com.michalporeba.golp.Clock
  com.michalporeba.golp.Clock$1
+ com.michalporeba.golp.Clock$2
  com.michalporeba.golp.Clock$ClockCallback
  com.michalporeba.golp.Clock$MenuBuilder
+ com.michalporeba.golp.Clock$Observer
 com/michalporeba/golp/ConweyRulesEngine.java
  com.michalporeba.golp.ConweyRulesEngine
-com/michalporeba/golp/GameOfLife.java
- com.michalporeba.golp.GameOfLife
- com.michalporeba.golp.GameOfLife$ClockMenuBuilder
- com.michalporeba.golp.GameOfLife$ClockMenuBuilder$1
+com/michalporeba/golp/BoardWriter.java
+ com.michalporeba.golp.BoardWriter
 com/michalporeba/golp/StandardCell.java
  com.michalporeba.golp.StandardCell
 com/michalporeba/golp/Board.java
  com.michalporeba.golp.Board
 com/michalporeba/golp/RulesEngine.java
  com.michalporeba.golp.RulesEngine
-com/michalporeba/golp/BoardWriter.java
- com.michalporeba.golp.BoardWriter
+com/michalporeba/golp/GameOfLife.java
+ com.michalporeba.golp.GameOfLife
+ com.michalporeba.golp.GameOfLife$ClockMenuBuilder
+ com.michalporeba.golp.GameOfLife$ClockMenuBuilder$1
