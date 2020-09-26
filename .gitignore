@@ -24,3 +24,6 @@ hs_err_pid*
 /bin/
 /.gradle/
 /build/
+!src/**/build/
+**/build/
+.gradle/
