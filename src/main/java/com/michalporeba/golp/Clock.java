@@ -23,9 +23,9 @@ public class Clock {
     }
 
     public void createUiWith(MenuBuilder menuBuilder) {
-        menuBuilder.addOption("Slow", () -> setDelay(100));
+        menuBuilder.addOption("Slow", () -> setDelay(1000));
         menuBuilder.addOption("Medium", () -> setDelay(500));
-        menuBuilder.addOption("Fast", () -> setDelay(1000));
+        menuBuilder.addOption("Fast", () -> setDelay(100));
         menuBuilder.addStart(() -> start());
         menuBuilder.addPause(() -> pause());
     }
@@ -67,7 +67,7 @@ public class Clock {
     }
 
     public void addObserver(TickObserver observer) {
-
+        tickObservers.add(observer);
     }
 
     private void cancelTick() {

@@ -1,16 +1,13 @@
 package com.michalporeba.golp;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.layout.Region;
 import javafx.stage.Stage;
-
-import java.util.Dictionary;
 
 public class GameOfLife extends Application {
 
@@ -24,13 +21,26 @@ public class GameOfLife extends Application {
 
 
         MenuBar menuBar = new MenuBar();
-        VBox root = new VBox(menuBar);
+        Label label = new Label("+");
+        VBox root = new VBox(menuBar, label);
 
         Universe universe = new Universe();
 
         ClockMenuBuilder clockMenuBuilder = new ClockMenuBuilder(menuBar);
         Clock.getInstance().createUiWith(clockMenuBuilder);
         Clock.getInstance().addObserver(universe);
+        Clock.getInstance().addObserver(new Clock.TickObserver() {
+            @Override
+            public void tick() {
+                Platform.runLater(() -> {
+                    if (label.getText().length()==0) {
+                        label.setText("*");
+                    } else {
+                        label.setText("");
+                    }
+                });
+            }
+        });
 
         primaryStage.setScene(new Scene(root, 300, 300));
         primaryStage.show();
