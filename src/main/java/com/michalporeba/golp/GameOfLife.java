@@ -26,8 +26,11 @@ public class GameOfLife extends Application {
         MenuBar menuBar = new MenuBar();
         VBox root = new VBox(menuBar);
 
+        Universe universe = new Universe();
+
         ClockMenuBuilder clockMenuBuilder = new ClockMenuBuilder(menuBar);
         Clock.getInstance().createUiWith(clockMenuBuilder);
+        Clock.getInstance().addObserver(universe);
 
         primaryStage.setScene(new Scene(root, 300, 300));
         primaryStage.show();

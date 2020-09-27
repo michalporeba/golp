@@ -1,5 +1,7 @@
 package com.michalporeba.golp;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -7,6 +9,7 @@ public class Clock {
     private Timer clock = new Timer();
     private TimerTask tick = null;
     private int currentDelay = 500;
+    private List<TickObserver> tickObservers = new ArrayList<TickObserver>();
 
     private static Clock instance;
 
@@ -63,6 +66,10 @@ public class Clock {
         cancelTick();
     }
 
+    public void addObserver(TickObserver observer) {
+
+    }
+
     private void cancelTick() {
         if (tick != null) {
             tick.cancel();
@@ -71,8 +78,12 @@ public class Clock {
     }
 
     private void tick() {
-        System.out.print("*");
+        for(TickObserver o : tickObservers) {
+            o.tick();
+        }
     }
+
+
 
     interface ClockCallback {
         void execute();
@@ -84,8 +95,11 @@ public class Clock {
         void addPause(ClockCallback callback);
     }
 
-    interface Observer {
+    interface TickObserver {
         void tick();
+    }
+
+    interface ClockObserver {
         void tempoChanged();
         void started();
         void paused();
