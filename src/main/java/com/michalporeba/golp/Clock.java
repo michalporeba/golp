@@ -66,7 +66,7 @@ public class Clock {
         cancelTick();
     }
 
-    public void addObserver(TickObserver observer) {
+    public synchronized void addObserver(TickObserver observer) {
         tickObservers.add(observer);
     }
 
@@ -83,25 +83,23 @@ public class Clock {
         }
     }
 
-
-
     interface ClockCallback {
         void execute();
     }
 
+    /**
+     * contained interface for the builder pattern
+     */
     interface MenuBuilder {
         void addOption(String action, ClockCallback callback);
         void addStart(ClockCallback callback);
         void addPause(ClockCallback callback);
     }
 
+    /**
+     * observer definition for the observer pattern.
+     */
     interface TickObserver {
         void tick();
-    }
-
-    interface ClockObserver {
-        void tempoChanged();
-        void started();
-        void paused();
     }
 }

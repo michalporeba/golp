@@ -9,6 +9,9 @@ import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * The GameOfLife entry point
+ */
 public class GameOfLife extends Application {
 
     public static void main(String[] args) {
@@ -30,6 +33,7 @@ public class GameOfLife extends Application {
         Clock.getInstance().createUiWith(clockMenuBuilder);
         Clock.getInstance().addObserver(universe);
         Clock.getInstance().addObserver(new Clock.TickObserver() {
+            //this anonymous class implements the concrete observer for the clock
             @Override
             public void tick() {
                 Platform.runLater(() -> {
@@ -46,6 +50,10 @@ public class GameOfLife extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Implements the Menu Builder for the Clock
+     * A concrete builder from the builder pattern
+     */
     class ClockMenuBuilder implements Clock.MenuBuilder {
         MenuBar menuBar = null;
         Menu clockMenu = null;
