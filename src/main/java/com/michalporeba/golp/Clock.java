@@ -9,7 +9,8 @@ public class Clock {
     private Timer clock = new Timer();
     private TimerTask tick = null;
     private int currentDelay = 500;
-    private List<TickObserver> tickObservers = new ArrayList<TickObserver>();
+    //private List<TickObserver> tickObservers = new ArrayList<TickObserver>();
+    private Publisher tickPublisher = new Publisher();
 
     private static Clock instance;
 
@@ -66,8 +67,8 @@ public class Clock {
         cancelTick();
     }
 
-    public synchronized void addObserver(TickObserver observer) {
-        tickObservers.add(observer);
+    public void addObserver(TickObserver observer) {
+        tickPublisher.subscribe(observer);
     }
 
     private void cancelTick() {
@@ -78,9 +79,12 @@ public class Clock {
     }
 
     private void tick() {
-        for(TickObserver o : tickObservers) {
-            o.tick();
-        }
+        tickPublisher.publish(new Publisher.Distributor() {
+            @Override
+            public void deliverTo(Object subscriber) {
+                ((TickObserver)subscriber).tick();
+            }
+        });
     }
 
     interface ClockCallback {
