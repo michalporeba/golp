@@ -6,10 +6,17 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Clock {
+
+    /**
+     * observer definition for the observer pattern.
+     */
+    interface TickObserver {
+        void tick();
+    }
+
     private Timer clock = new Timer();
     private TimerTask tick = null;
     private int currentDelay = 500;
-    //private List<TickObserver> tickObservers = new ArrayList<TickObserver>();
     private Publisher tickPublisher = new Publisher();
 
     private static Clock instance;
@@ -17,7 +24,7 @@ public class Clock {
     private Clock() {
     }
 
-    public synchronized static Clock getInstance() {
+    synchronized public static Clock getInstance() {
         if (instance == null)
             instance = new Clock();
         return instance;
@@ -33,34 +40,21 @@ public class Clock {
 
     public void setDelay(int delayInMilliseconds) {
         currentDelay = delayInMilliseconds;
-        if (tick != null) {
-            tick.cancel();
-            tick = null;
+        if (tick == null) {
+            // it is not started, we are simply changing the tempo
+            return;
         }
 
-        if (currentDelay > 0) {
-            tick = new TimerTask() {
-                @Override
-                public void run() {
-                    tick();
-                }
-            };
-            clock.scheduleAtFixedRate(tick, 0, currentDelay);
-        }
+        cancelTick();
+        newTick();
     }
 
     public void start() {
-        cancelTick();
-
-        if (currentDelay > 0) {
-            tick = new TimerTask() {
-                @Override
-                public void run() {
-                    tick();
-                }
-            };
-            clock.scheduleAtFixedRate(tick, 0, currentDelay);
+        if (tick != null) {
+            // it is already started, there is nothing to do
+            return;
         }
+        newTick();
     }
 
     public void pause() {
@@ -78,6 +72,18 @@ public class Clock {
         }
     }
 
+    private void newTick() {
+        if (currentDelay > 0) {
+            tick = new TimerTask() {
+                @Override
+                public void run() {
+                    tick();
+                }
+            };
+            clock.scheduleAtFixedRate(tick, 0, currentDelay);
+        }
+    }
+
     private void tick() {
         tickPublisher.publish(new Publisher.Distributor() {
             @Override
@@ -87,23 +93,12 @@ public class Clock {
         });
     }
 
-    interface ClockCallback {
-        void execute();
-    }
-
     /**
      * contained interface for the builder pattern
      */
     interface MenuBuilder {
-        void addOption(String action, ClockCallback callback);
-        void addStart(ClockCallback callback);
-        void addPause(ClockCallback callback);
-    }
-
-    /**
-     * observer definition for the observer pattern.
-     */
-    interface TickObserver {
-        void tick();
+        void addOption(String action, Runnable callback);
+        void addStart(Runnable callback);
+        void addPause(Runnable callback);
     }
 }

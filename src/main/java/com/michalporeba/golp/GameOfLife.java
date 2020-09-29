@@ -22,7 +22,6 @@ public class GameOfLife extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Game of Life");
 
-
         MenuBar menuBar = new MenuBar();
         Label label = new Label("+");
         VBox root = new VBox(menuBar, label);
@@ -63,23 +62,23 @@ public class GameOfLife extends Application {
         }
 
         @Override
-        public void addOption(String action, Clock.ClockCallback callback) {
+        public void addOption(String action, Runnable callback) {
             ensureMenuExists();
 
             MenuItem menu = new MenuItem(action);
             menu.setOnAction(new EventHandler<>() {
                 @Override
                 public void handle(ActionEvent event) {
-                    callback.execute();
+                    callback.run();
                 }
             });
             clockMenu.getItems().add(menu);
         }
 
-        public void addStart(Clock.ClockCallback callback) {
+        public void addStart(Runnable callback) {
             addOption("Start", callback);
         }
-        public void addPause(Clock.ClockCallback callback) {
+        public void addPause(Runnable callback) {
             addOption("Pause", callback);
         }
 
