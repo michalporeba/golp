@@ -75,11 +75,14 @@ public class GameOfLife extends Application {
             clockMenu.getItems().add(menu);
         }
 
-        public void addStart(Runnable callback) {
-            addOption("Start", callback);
-        }
-        public void addPause(Runnable callback) {
-            addOption("Pause", callback);
+        public void addGroup(String name) {
+            ensureMenuExists();
+
+            if (clockMenu.getItems().size() == 0)
+                return;
+
+            SeparatorMenuItem menu = new SeparatorMenuItem();
+            clockMenu.getItems().addAll(menu);
         }
 
         private void ensureMenuExists() {

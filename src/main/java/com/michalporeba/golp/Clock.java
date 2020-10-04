@@ -40,11 +40,14 @@ public class Clock {
      * @param menuBuilder
      */
     public void createUiWith(MenuBuilder menuBuilder) {
+        menuBuilder.addGroup("Tempos");
         menuBuilder.addOption("Slow", () -> setDelay(1000));
         menuBuilder.addOption("Medium", () -> setDelay(500));
         menuBuilder.addOption("Fast", () -> setDelay(100));
-        menuBuilder.addStart(() -> start());
-        menuBuilder.addPause(() -> pause());
+        menuBuilder.addGroup("Controls");
+        menuBuilder.addOption("Start", () -> start());
+        menuBuilder.addOption("Pause", () -> pause());
+        menuBuilder.addOption("Tick", () -> tick());
     }
 
     public void setDelay(int delayInMilliseconds) {
@@ -104,8 +107,7 @@ public class Clock {
      * contained interface for the builder pattern
      */
     interface MenuBuilder {
+        void addGroup(String name);
         void addOption(String action, Runnable callback);
-        void addStart(Runnable callback);
-        void addPause(Runnable callback);
     }
 }
