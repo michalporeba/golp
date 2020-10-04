@@ -9,6 +9,8 @@ public class Clock {
 
     /**
      * observer definition for the observer pattern.
+     * this interface could be removed and Runnable used instead
+     * but understanding the observer pattern would be more difficult
      */
     interface TickObserver {
         void tick();
@@ -24,12 +26,19 @@ public class Clock {
     private Clock() {
     }
 
-    synchronized public static Clock getInstance() {
+    public static synchronized Clock getInstance() {
         if (instance == null)
             instance = new Clock();
         return instance;
     }
 
+    /**
+     * This method creates the UI for the Clock object
+     * It is important that the object creates its own UI, but it is also important
+     * that it does not depend on the specifics of the UI framework used. To deal
+     * with this problem the Builder pattern is used.
+     * @param menuBuilder
+     */
     public void createUiWith(MenuBuilder menuBuilder) {
         menuBuilder.addOption("Slow", () -> setDelay(1000));
         menuBuilder.addOption("Medium", () -> setDelay(500));
@@ -40,36 +49,29 @@ public class Clock {
 
     public void setDelay(int delayInMilliseconds) {
         currentDelay = delayInMilliseconds;
-        if (tick == null) {
-            // it is not started, we are simply changing the tempo
+        if (tick == null) // it is not started, we are simply changing the tempo
             return;
-        }
 
-        cancelTick();
+        pause();
         newTick();
     }
 
     public void start() {
-        if (tick != null) {
-            // it is already started, there is nothing to do
-            return;
-        }
-        newTick();
+        // start only if it isn't started already
+        if (tick == null)
+            newTick();
     }
 
     public void pause() {
-        cancelTick();
+        if (tick == null)
+            return;
+
+        tick.cancel();
+        tick = null;
     }
 
     public void addObserver(TickObserver observer) {
         tickPublisher.subscribe(observer);
-    }
-
-    private void cancelTick() {
-        if (tick != null) {
-            tick.cancel();
-            tick = null;
-        }
     }
 
     private void newTick() {
@@ -91,6 +93,11 @@ public class Clock {
                 ((TickObserver)subscriber).tick();
             }
         });
+    }
+
+    private void tickAlternativeSyntax() {
+        // calls deliverTo method on Publisher.Distributor
+        tickPublisher.publish(subscriber -> ((TickObserver)subscriber).tick());
     }
 
     /**
