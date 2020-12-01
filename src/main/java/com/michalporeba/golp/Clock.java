@@ -16,6 +16,15 @@ public class Clock {
         void tick();
     }
 
+    enum Actions {
+        Slow,
+        Medium,
+        Fast,
+        Start,
+        Pause,
+        Tick
+    }
+
     private Timer clock = new Timer();
     private TimerTask tick = null;
     private int currentDelay = 500;
@@ -37,17 +46,18 @@ public class Clock {
      * It is important that the object creates its own UI, but it is also important
      * that it does not depend on the specifics of the UI framework used. To deal
      * with this problem the Builder pattern is used.
-     * @param menuBuilder
+     * @param uiBuilder
      */
-    public void createUiWith(MenuBuilder menuBuilder) {
-        menuBuilder.addGroup("Tempos");
-        menuBuilder.addOption("Slow", () -> setDelay(1000));
-        menuBuilder.addOption("Medium", () -> setDelay(500));
-        menuBuilder.addOption("Fast", () -> setDelay(100));
-        menuBuilder.addGroup("Controls");
-        menuBuilder.addOption("Start", () -> start());
-        menuBuilder.addOption("Pause", () -> pause());
-        menuBuilder.addOption("Tick", () -> tick());
+    public void createUiWith(UiBuilder uiBuilder) {
+        uiBuilder.addGroup("Tempos");
+        uiBuilder.addOption(Actions.Slow, () -> setDelay(1000));
+        uiBuilder.addOption(Actions.Medium, () -> setDelay(500));
+        uiBuilder.addOption(Actions.Fast, () -> setDelay(100));
+        uiBuilder.addGroup("Controls");
+        uiBuilder.addOption(Actions.Start, () -> start());
+        uiBuilder.addOption(Actions.Pause, () -> pause());
+        uiBuilder.addGroup("Other");
+        uiBuilder.addOption(Actions.Tick, () -> tick());
     }
 
     public void setDelay(int delayInMilliseconds) {
@@ -106,8 +116,8 @@ public class Clock {
     /**
      * contained interface for the builder pattern
      */
-    interface MenuBuilder {
+    interface UiBuilder {
         void addGroup(String name);
-        void addOption(String action, Runnable callback);
+        void addOption(Actions action, Runnable callback);
     }
 }
