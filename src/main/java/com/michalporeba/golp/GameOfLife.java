@@ -32,10 +32,12 @@ public class GameOfLife extends Application {
         // the universe represents the game's business logic
         Universe universe = new Universe();
 
-        ClockMenuBuilder clockMenuBuilder = new ClockMenuBuilder(menuBar);
-        ClockToolbarBuilder clockToolbarBuilder = new ClockToolbarBuilder(toolBar);
-        Clock.getInstance().createUiWith(clockMenuBuilder);
-        Clock.getInstance().createUiWith(clockToolbarBuilder);
+        ClockMenu clockMenu = new ClockMenu(menuBar);
+        ClockToolbar clockToolbar = new ClockToolbar(toolBar);
+        Clock.getInstance().createUiWith(clockMenu);
+        Clock.getInstance().createUiWith(clockToolbar);
+        Clock.getInstance().addObserver(clockMenu);
+        Clock.getInstance().addObserver(clockToolbar);
         Clock.getInstance().addObserver(universe);
         Clock.getInstance().addObserver(new Clock.TickObserver() {
             //this anonymous class implements the concrete observer for the clock
@@ -59,11 +61,14 @@ public class GameOfLife extends Application {
      * Implements the Menu Builder for the Clock
      * A concrete builder from the builder pattern
      */
-    class ClockMenuBuilder implements Clock.UiBuilder {
+    class ClockMenu implements Clock.UiBuilder, Clock.ActionObserver {
         MenuBar menuBar = null;
         Menu clockMenu = null;
+        MenuItem stop;
+        MenuItem play;
+        MenuItem tick;
 
-        public ClockMenuBuilder(MenuBar menuBar) {
+        public ClockMenu(MenuBar menuBar) {
             this.menuBar = menuBar;
         }
 
@@ -72,6 +77,11 @@ public class GameOfLife extends Application {
             ensureMenuExists();
 
             MenuItem menu = new MenuItem(action.toString());
+            switch (action) {
+                case Pause: stop = menu; stop.setDisable(true); break;
+                case Start: play = menu; break;
+                case Tick: tick = menu; break;
+            }
             menu.setOnAction(new EventHandler<>() {
                 @Override
                 public void handle(ActionEvent event) {
@@ -97,9 +107,25 @@ public class GameOfLife extends Application {
                 menuBar.getMenus().add(clockMenu);
             }
         }
+
+        @Override
+        public void actionInvoked(Clock.Actions action) {
+            switch (action) {
+                case Pause:
+                    stop.setDisable(true);
+                    play.setDisable(false);
+                    tick.setDisable(false);
+                    break;
+                case Start:
+                    stop.setDisable(false);
+                    play.setDisable(true);
+                    tick.setDisable(true);
+                    break;
+            }
+        }
     }
 
-    class ClockToolbarBuilder implements Clock.UiBuilder {
+    class ClockToolbar implements Clock.ActionObserver, Clock.UiBuilder  {
         ToolBar toolBar;
         Button slower;
         Button stop;
@@ -107,11 +133,12 @@ public class GameOfLife extends Application {
         Button tick;
         Button faster;
 
-        public ClockToolbarBuilder(ToolBar toolBar) {
+        public ClockToolbar(ToolBar toolBar) {
             this.toolBar = toolBar;
             slower = new Button("-");
             toolBar.getItems().add(slower);
             stop = new Button("[]");
+            stop.setDisable(true);
             toolBar.getItems().add(stop);
             tick = new Button(">");
             toolBar.getItems().add(tick);
@@ -143,6 +170,22 @@ public class GameOfLife extends Application {
                     callback.run();
                 }
             });
+        }
+
+        @Override
+        public void actionInvoked(Clock.Actions action) {
+            switch (action) {
+                case Pause:
+                    stop.setDisable(true);
+                    play.setDisable(false);
+                    tick.setDisable(false);
+                    break;
+                case Start:
+                    stop.setDisable(false);
+                    play.setDisable(true);
+                    tick.setDisable(true);
+                    break;
+            }
         }
     }
 }

@@ -1,11 +1,16 @@
 package com.michalporeba.golp;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class Clock {
+
+    interface ActionObserver {
+        void actionInvoked(Actions action);
+    }
 
     /**
      * observer definition for the observer pattern.
@@ -29,6 +34,7 @@ public class Clock {
     private TimerTask tick = null;
     private int currentDelay = 500;
     private Publisher tickPublisher = new Publisher();
+    private Publisher actionPublisher = new Publisher();
 
     private static Clock instance;
 
@@ -50,17 +56,31 @@ public class Clock {
      */
     public void createUiWith(UiBuilder uiBuilder) {
         uiBuilder.addGroup("Tempos");
-        uiBuilder.addOption(Actions.Slow, () -> setDelay(1000));
-        uiBuilder.addOption(Actions.Medium, () -> setDelay(500));
-        uiBuilder.addOption(Actions.Fast, () -> setDelay(100));
+        uiBuilder.addOption(Actions.Slow, () -> setSlow());
+        uiBuilder.addOption(Actions.Medium, () -> setMedium());
+        uiBuilder.addOption(Actions.Fast, () -> setFast());
         uiBuilder.addGroup("Controls");
         uiBuilder.addOption(Actions.Start, () -> start());
         uiBuilder.addOption(Actions.Pause, () -> pause());
         uiBuilder.addGroup("Other");
-        uiBuilder.addOption(Actions.Tick, () -> tick());
+        uiBuilder.addOption(Actions.Tick, () -> tickNotify());
     }
 
-    public void setDelay(int delayInMilliseconds) {
+    public void setSlow() {
+        actionNotify(Actions.Slow);
+        setDelay(1000);
+    }
+
+    public void setMedium() {
+        actionNotify(Actions.Medium);
+        setDelay(500);
+    }
+
+    public void setFast() {
+        actionNotify(Actions.Fast);
+        setDelay(100);
+    }
+    private void setDelay(int delayInMilliseconds) {
         currentDelay = delayInMilliseconds;
         if (tick == null) // it is not started, we are simply changing the tempo
             return;
@@ -71,14 +91,17 @@ public class Clock {
 
     public void start() {
         // start only if it isn't started already
-        if (tick == null)
+        if (tick == null) {
+            actionNotify(Actions.Start);
             newTick();
+        }
     }
 
     public void pause() {
         if (tick == null)
             return;
 
+        actionNotify(Actions.Pause);
         tick.cancel();
         tick = null;
     }
@@ -86,20 +109,22 @@ public class Clock {
     public void addObserver(TickObserver observer) {
         tickPublisher.subscribe(observer);
     }
+    public void addObserver(ActionObserver observer) { actionPublisher.subscribe(observer); }
 
     private void newTick() {
         if (currentDelay > 0) {
+            actionNotify(Actions.Start);
             tick = new TimerTask() {
                 @Override
                 public void run() {
-                    tick();
+                    tickNotify();
                 }
             };
             clock.scheduleAtFixedRate(tick, 0, currentDelay);
         }
     }
 
-    private void tick() {
+    private void tickNotify() {
         tickPublisher.publish(new Publisher.Distributor() {
             @Override
             public void deliverTo(Object subscriber) {
@@ -111,6 +136,15 @@ public class Clock {
     private void tickAlternativeSyntax() {
         // calls deliverTo method on Publisher.Distributor
         tickPublisher.publish(subscriber -> ((TickObserver)subscriber).tick());
+    }
+
+    private void actionNotify(Actions action) {
+        actionPublisher.publish(new Publisher.Distributor() {
+            @Override
+            public void deliverTo(Object subscriber) {
+                ((ActionObserver)subscriber).actionInvoked(action);
+            }
+        });
     }
 
     /**
