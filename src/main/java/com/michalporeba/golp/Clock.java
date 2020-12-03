@@ -25,6 +25,8 @@ public class Clock {
         Slow,
         Medium,
         Fast,
+        SlowDown,
+        SpeedUp,
         Start,
         Pause,
         Tick
@@ -59,6 +61,8 @@ public class Clock {
         uiBuilder.addOption(Actions.Slow, () -> setSlow());
         uiBuilder.addOption(Actions.Medium, () -> setMedium());
         uiBuilder.addOption(Actions.Fast, () -> setFast());
+        uiBuilder.addOption(Actions.SpeedUp, () -> speedUp());
+        uiBuilder.addOption(Actions.SlowDown, () -> slowDown());
         uiBuilder.addGroup("Controls");
         uiBuilder.addOption(Actions.Start, () -> start());
         uiBuilder.addOption(Actions.Pause, () -> pause());
@@ -80,6 +84,17 @@ public class Clock {
         actionNotify(Actions.Fast);
         setDelay(100);
     }
+
+    public void slowDown() {
+        setDelay((int)(currentDelay*1.1));
+    }
+
+    public void speedUp() {
+        if (currentDelay > 10) {
+            setDelay((int) (currentDelay * 0.9));
+        }
+    }
+
     private void setDelay(int delayInMilliseconds) {
         currentDelay = delayInMilliseconds;
         if (tick == null) // it is not started, we are simply changing the tempo

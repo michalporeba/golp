@@ -6,7 +6,6 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.*;
 import javafx.scene.Scene;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -127,16 +126,16 @@ public class GameOfLife extends Application {
 
     class ClockToolbar implements Clock.ActionObserver, Clock.UiBuilder  {
         ToolBar toolBar;
-        Button slower;
+        Button slowDown;
         Button stop;
         Button play;
         Button tick;
-        Button faster;
+        Button speedUp;
 
         public ClockToolbar(ToolBar toolBar) {
             this.toolBar = toolBar;
-            slower = new Button("-");
-            toolBar.getItems().add(slower);
+            slowDown = new Button("-");
+            toolBar.getItems().add(slowDown);
             stop = new Button("[]");
             stop.setDisable(true);
             toolBar.getItems().add(stop);
@@ -144,8 +143,8 @@ public class GameOfLife extends Application {
             toolBar.getItems().add(tick);
             play = new Button(">>");
             toolBar.getItems().add(play);
-            faster = new Button("+");
-            toolBar.getItems().add(faster);
+            speedUp = new Button("+");
+            toolBar.getItems().add(speedUp);
         }
 
         @Override
@@ -160,6 +159,9 @@ public class GameOfLife extends Application {
                 case Pause: addCallbackToButton(stop, callback); break;
                 case Start: addCallbackToButton(play, callback); break;
                 case Tick: addCallbackToButton(tick, callback); break;
+                case SpeedUp: addCallbackToButton(speedUp, callback); break;
+                case SlowDown: addCallbackToButton(slowDown, callback); break;
+
             }
         }
 
