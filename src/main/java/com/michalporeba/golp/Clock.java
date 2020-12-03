@@ -7,14 +7,29 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class Clock {
+    /**
+     * contained interface for the builder pattern
+     */
+    interface UiBuilder {
+        void addOption(Actions action, Runnable callback);
+    }
 
+    /**
+     * The Oobserver (from observer pattern) definition which is notified
+     * about clock functions being invoked. It is useful on the UI
+     * to change the state of the UI to align with what functions are
+     * available.
+     */
     interface ActionObserver {
+        // TODO: it could be further improved if the UI did not check the logic
+        // but instead the clock decided which actions are available. Perhaps
+        // this observer could be changed from a push to pull model.
         void actionInvoked(Actions action);
     }
 
     /**
-     * observer definition for the observer pattern.
-     * this interface could be removed and Runnable used instead
+     * The Observer (from observer pattern) definition which is notified about ticks.
+     * This interface could be removed and Runnable used instead
      * but understanding the observer pattern would be more difficult
      */
     interface TickObserver {
@@ -57,16 +72,13 @@ public class Clock {
      * @param uiBuilder
      */
     public void createUiWith(UiBuilder uiBuilder) {
-        uiBuilder.addGroup("Tempos");
         uiBuilder.addOption(Actions.Slow, () -> setSlow());
         uiBuilder.addOption(Actions.Medium, () -> setMedium());
         uiBuilder.addOption(Actions.Fast, () -> setFast());
         uiBuilder.addOption(Actions.SpeedUp, () -> speedUp());
         uiBuilder.addOption(Actions.SlowDown, () -> slowDown());
-        uiBuilder.addGroup("Controls");
         uiBuilder.addOption(Actions.Start, () -> start());
         uiBuilder.addOption(Actions.Pause, () -> pause());
-        uiBuilder.addGroup("Other");
         uiBuilder.addOption(Actions.Tick, () -> tickNotify());
     }
 
@@ -160,13 +172,5 @@ public class Clock {
                 ((ActionObserver)subscriber).actionInvoked(action);
             }
         });
-    }
-
-    /**
-     * contained interface for the builder pattern
-     */
-    interface UiBuilder {
-        void addGroup(String name);
-        void addOption(Actions action, Runnable callback);
     }
 }

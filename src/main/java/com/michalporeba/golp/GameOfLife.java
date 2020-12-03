@@ -90,16 +90,6 @@ public class GameOfLife extends Application {
             clockMenu.getItems().add(menu);
         }
 
-        public void addGroup(String name) {
-            ensureMenuExists();
-
-            if (clockMenu.getItems().size() == 0)
-                return;
-
-            SeparatorMenuItem menu = new SeparatorMenuItem();
-            clockMenu.getItems().addAll(menu);
-        }
-
         private void ensureMenuExists() {
             if (clockMenu == null) {
                 clockMenu = new Menu("Clock");
@@ -145,12 +135,6 @@ public class GameOfLife extends Application {
             toolBar.getItems().add(play);
             speedUp = new Button("+");
             toolBar.getItems().add(speedUp);
-        }
-
-        @Override
-        public void addGroup(String name) {
-            // do nothing, it's not applicable here
-            // TODO: in that case perhaps it should not be part of the interface
         }
 
         @Override
