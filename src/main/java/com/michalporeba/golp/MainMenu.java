@@ -1,7 +1,5 @@
 package com.michalporeba.golp;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -9,18 +7,18 @@ import javafx.scene.control.MenuItem;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MenuUi implements ActionableUi {
+public class MainMenu implements ActionableUi {
     // a Facade over the menu system
-    private static MenuUi instance;
+    private static MainMenu instance;
     private MenuBar menuBar;
     private final Map<String, Menu> menus = new HashMap<>();
     private final Map<Object, Map<Object, MenuItem>> menuItems = new HashMap<>();
 
-    private MenuUi(){}
+    private MainMenu(){}
 
-    public static synchronized MenuUi getInstance() {
+    public static synchronized MainMenu getInstance() {
         if (instance == null)
-            instance = new MenuUi();
+            instance = new MainMenu();
         return instance;
     }
 
@@ -35,20 +33,30 @@ public class MenuUi implements ActionableUi {
 
     @Override
     public void addAction(String path, Object owner, Object action, Runnable callback) {
+        if (path.isBlank())
+            path = owner.getClass().getName();
+
         String currentPath = "";
+        Menu currentMenu = null;
+
         for(var p : path.split("\\.")) {
-            Menu menu = new Menu(p);
-            if (currentPath.isBlank()) {
-                menuBar.getMenus().add(menu);
-            } else {
-                menus.get(currentPath).getItems().add(menu);
+            currentPath += (currentMenu == null ? "" : ".") + p;
+
+            if (menus.containsKey(currentPath)) {
+                currentMenu = menus.get(currentPath);
+                continue;
             }
 
-            if (!currentPath.isBlank())
-                currentPath += ".";
-            currentPath += p;
+            Menu menu = new Menu(p);
+
+            if (currentMenu == null) {
+                menuBar.getMenus().add(menu);
+            } else {
+                currentMenu.getItems().add(menu);
+            }
 
             menus.put(currentPath, menu);
+            currentMenu = menu;
         }
 
         if (!menuItems.containsKey(owner))
@@ -56,7 +64,10 @@ public class MenuUi implements ActionableUi {
 
         if (!menuItems.get(owner).containsKey(action)) {
             var menuItem = new MenuItem(action.toString());
-            menuItem.setOnAction(e -> { callback.run(); });
+            menuItem.setOnAction(e -> {
+                callback.run();
+            });
+            currentMenu.getItems().add(menuItem);
             menuItems.get(owner).put(action, menuItem);
         }
     }

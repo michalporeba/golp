@@ -82,6 +82,15 @@ public class Clock {
         uiBuilder.addOption(Actions.Tick, () -> tickNotify());
     }
 
+    public void addMenuTo(ActionableUi ui) {
+        ui.addAction("Clock", this, Actions.Tick, () -> tickNotify());
+        ui.addAction("Clock", this, Actions.Start, () -> start());
+        ui.addAction("Clock", this, Actions.Pause, () -> pause());
+        ui.addAction("Clock.Speed", this, Actions.Slow, () -> setSlow());
+        ui.addAction("Clock.Speed", this, Actions.Medium, () -> setMedium());
+        ui.addAction("Clock.Speed", this, Actions.Fast, () -> setFast());
+    }
+
     public void setSlow() {
         actionNotify(Actions.Slow);
         setDelay(1000);

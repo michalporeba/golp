@@ -25,8 +25,8 @@ public class GameOfLife extends Application {
 
         MenuBar menuBar = new MenuBar();
 
-        MenuUi.getInstance().attachTo(menuBar);
-        // MenuUi.getInstance().addAction("abc.def.ghi", null, null, null);
+        MainMenu.getInstance().attachTo(menuBar);
+        // MenuUi.getInstance().addActio("abc.def.ghi", null, null, null);
         ToolBar toolBar = new ToolBar();
         Label label = new Label("+");
         VBox root = new VBox(menuBar, toolBar, label);
@@ -34,11 +34,10 @@ public class GameOfLife extends Application {
         // the universe represents the game's business logic
         Universe universe = new Universe();
 
-        ClockMenu clockMenu = new ClockMenu(menuBar);
+        Clock.getInstance().addMenuTo(MainMenu.getInstance());
+
         ClockToolbar clockToolbar = new ClockToolbar(toolBar);
-        Clock.getInstance().createUiWith(clockMenu);
         Clock.getInstance().createUiWith(clockToolbar);
-        Clock.getInstance().addObserver(clockMenu);
         Clock.getInstance().addObserver(clockToolbar);
         Clock.getInstance().addObserver(universe);
         Clock.getInstance().addObserver(new Clock.TickObserver() {
@@ -57,64 +56,6 @@ public class GameOfLife extends Application {
 
         primaryStage.setScene(new Scene(root, 300, 300));
         primaryStage.show();
-    }
-
-    /**
-     * Implements the Menu Builder for the Clock
-     * A concrete builder from the builder pattern
-     */
-    class ClockMenu implements Clock.UiBuilder, Clock.ActionObserver {
-        MenuBar menuBar = null;
-        Menu clockMenu = null;
-        MenuItem stop;
-        MenuItem play;
-        MenuItem tick;
-
-        public ClockMenu(MenuBar menuBar) {
-            this.menuBar = menuBar;
-        }
-
-        @Override
-        public void addOption(Clock.Actions action, Runnable callback) {
-            ensureMenuExists();
-
-            MenuItem menu = new MenuItem(action.toString());
-            switch (action) {
-                case Pause: stop = menu; stop.setDisable(true); break;
-                case Start: play = menu; break;
-                case Tick: tick = menu; break;
-            }
-            menu.setOnAction(new EventHandler<>() {
-                @Override
-                public void handle(ActionEvent event) {
-                    callback.run();
-                }
-            });
-            clockMenu.getItems().add(menu);
-        }
-
-        private void ensureMenuExists() {
-            if (clockMenu == null) {
-                clockMenu = new Menu("Clock");
-                menuBar.getMenus().add(clockMenu);
-            }
-        }
-
-        @Override
-        public void actionInvoked(Clock.Actions action) {
-            switch (action) {
-                case Pause:
-                    stop.setDisable(true);
-                    play.setDisable(false);
-                    tick.setDisable(false);
-                    break;
-                case Start:
-                    stop.setDisable(false);
-                    play.setDisable(true);
-                    tick.setDisable(true);
-                    break;
-            }
-        }
     }
 
     class ClockToolbar implements Clock.ActionObserver, Clock.UiBuilder  {
