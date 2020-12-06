@@ -15,7 +15,7 @@ public class Clock {
     }
 
     /**
-     * The Oobserver (from observer pattern) definition which is notified
+     * The Observer (from observer pattern) definition which is notified
      * about clock functions being invoked. It is useful on the UI
      * to change the state of the UI to align with what functions are
      * available.

@@ -24,6 +24,9 @@ public class GameOfLife extends Application {
         primaryStage.setTitle("Game of Patterns");
 
         MenuBar menuBar = new MenuBar();
+
+        MenuUi.getInstance().attachTo(menuBar);
+        // MenuUi.getInstance().addAction("abc.def.ghi", null, null, null);
         ToolBar toolBar = new ToolBar();
         Label label = new Label("+");
         VBox root = new VBox(menuBar, toolBar, label);
