@@ -74,11 +74,22 @@ public class MainMenu implements ActionableUi {
 
     @Override
     public void enable(Object owner, Object action) {
-
+        if (!actionExists(owner, action))
+            return;
+        menuItems.get(owner).get(action).setDisable(false);
     }
 
     @Override
     public void disable(Object owner, Object action) {
+        if (!actionExists(owner, action))
+            return;
+        menuItems.get(owner).get(action).setDisable(true);
+    }
 
+    private boolean actionExists(Object owner, Object action) {
+        return (
+            menuItems.containsKey(owner)
+            && menuItems.get(owner).containsKey(action)
+        );
     }
 }

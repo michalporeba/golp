@@ -1,8 +1,5 @@
 package com.michalporeba.golp;
 
-import javax.swing.*;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -51,6 +48,7 @@ public class Clock {
     private TimerTask tick = null;
     private int currentDelay = 500;
     private Publisher tickPublisher = new Publisher();
+    private Publisher oldActionPublisher = new Publisher();
     private Publisher actionPublisher = new Publisher();
 
     private static Clock instance;
@@ -82,13 +80,23 @@ public class Clock {
         uiBuilder.addOption(Actions.Tick, () -> tickNotify());
     }
 
-    public void addMenuTo(ActionableUi ui) {
+    public void addToMenu(ActionableUi ui) {
         ui.addAction("Clock", this, Actions.Tick, () -> tickNotify());
         ui.addAction("Clock", this, Actions.Start, () -> start());
         ui.addAction("Clock", this, Actions.Pause, () -> pause());
         ui.addAction("Clock.Speed", this, Actions.Slow, () -> setSlow());
         ui.addAction("Clock.Speed", this, Actions.Medium, () -> setMedium());
         ui.addAction("Clock.Speed", this, Actions.Fast, () -> setFast());
+        actionPublisher.subscribe(ui);
+    }
+
+    public void addToToolbar(ActionableUi ui) {
+        ui.addAction("Clock", this, Actions.Tick, () -> tickNotify());
+        ui.addAction("Clock", this, Actions.Start, () -> start());
+        ui.addAction("Clock", this, Actions.Pause, () -> pause());
+        ui.addAction("Clock.Speed", this, Actions.SlowDown, () -> slowDown());
+        ui.addAction("Clock.Speed", this, Actions.SpeedUp, () -> speedUp());
+        actionPublisher.subscribe(ui);
     }
 
     public void setSlow() {
@@ -131,13 +139,18 @@ public class Clock {
             actionNotify(Actions.Start);
             newTick();
         }
+
+        tickPublisher.publish(subscriber -> ((TickObserver)subscriber).tick());
+        disable(Actions.Tick, Actions.Start);
+        enable(Actions.Pause);
     }
 
     public void pause() {
         if (tick == null)
             return;
 
-        actionNotify(Actions.Pause);
+        disable(Actions.Pause);
+        enable(Actions.Tick, Actions.Start);
         tick.cancel();
         tick = null;
     }
@@ -145,7 +158,7 @@ public class Clock {
     public void addObserver(TickObserver observer) {
         tickPublisher.subscribe(observer);
     }
-    public void addObserver(ActionObserver observer) { actionPublisher.subscribe(observer); }
+    public void addObserver(ActionObserver observer) { oldActionPublisher.subscribe(observer); }
 
     private void newTick() {
         if (currentDelay > 0) {
@@ -175,11 +188,23 @@ public class Clock {
     }
 
     private void actionNotify(Actions action) {
-        actionPublisher.publish(new Publisher.Distributor() {
+        oldActionPublisher.publish(new Publisher.Distributor() {
             @Override
             public void deliverTo(Object subscriber) {
                 ((ActionObserver)subscriber).actionInvoked(action);
             }
         });
+    }
+
+    private void enable(Actions... actions) {
+        for(var action : actions) {
+            actionPublisher.publish(s -> ((ActionableUi)s).enable(this, action));
+        }
+    }
+
+    private void disable(Actions... actions) {
+        for(var action : actions) {
+            actionPublisher.publish(s -> ((ActionableUi)s).disable(this, action));
+        }
     }
 }

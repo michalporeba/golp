@@ -26,7 +26,6 @@ public class GameOfLife extends Application {
         MenuBar menuBar = new MenuBar();
 
         MainMenu.getInstance().attachTo(menuBar);
-        // MenuUi.getInstance().addActio("abc.def.ghi", null, null, null);
         ToolBar toolBar = new ToolBar();
         Label label = new Label("+");
         VBox root = new VBox(menuBar, toolBar, label);
@@ -34,7 +33,7 @@ public class GameOfLife extends Application {
         // the universe represents the game's business logic
         Universe universe = new Universe();
 
-        Clock.getInstance().addMenuTo(MainMenu.getInstance());
+        Clock.getInstance().addToMenu(MainMenu.getInstance());
 
         ClockToolbar clockToolbar = new ClockToolbar(toolBar);
         Clock.getInstance().createUiWith(clockToolbar);
