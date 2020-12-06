@@ -5,26 +5,6 @@ import java.util.TimerTask;
 
 public class Clock {
     /**
-     * contained interface for the builder pattern
-     */
-    interface UiBuilder {
-        void addOption(Actions action, Runnable callback);
-    }
-
-    /**
-     * The Observer (from observer pattern) definition which is notified
-     * about clock functions being invoked. It is useful on the UI
-     * to change the state of the UI to align with what functions are
-     * available.
-     */
-    interface ActionObserver {
-        // TODO: it could be further improved if the UI did not check the logic
-        // but instead the clock decided which actions are available. Perhaps
-        // this observer could be changed from a push to pull model.
-        void actionInvoked(Actions action);
-    }
-
-    /**
      * The Observer (from observer pattern) definition which is notified about ticks.
      * This interface could be removed and Runnable used instead
      * but understanding the observer pattern would be more difficult
@@ -62,24 +42,6 @@ public class Clock {
         return instance;
     }
 
-    /**
-     * This method creates the UI for the Clock object
-     * It is important that the object creates its own UI, but it is also important
-     * that it does not depend on the specifics of the UI framework used. To deal
-     * with this problem the Builder pattern is used.
-     * @param uiBuilder
-     */
-    public void createUiWith(UiBuilder uiBuilder) {
-        uiBuilder.addOption(Actions.Slow, () -> setSlow());
-        uiBuilder.addOption(Actions.Medium, () -> setMedium());
-        uiBuilder.addOption(Actions.Fast, () -> setFast());
-        uiBuilder.addOption(Actions.SpeedUp, () -> speedUp());
-        uiBuilder.addOption(Actions.SlowDown, () -> slowDown());
-        uiBuilder.addOption(Actions.Start, () -> start());
-        uiBuilder.addOption(Actions.Pause, () -> pause());
-        uiBuilder.addOption(Actions.Tick, () -> tickNotify());
-    }
-
     public void addToMenu(ActionableUi ui) {
         ui.addAction("Clock", this, Actions.Tick, () -> tickNotify());
         ui.addAction("Clock", this, Actions.Start, () -> start());
@@ -88,6 +50,7 @@ public class Clock {
         ui.addAction("Clock.Speed", this, Actions.Medium, () -> setMedium());
         ui.addAction("Clock.Speed", this, Actions.Fast, () -> setFast());
         actionPublisher.subscribe(ui);
+        disable(Actions.Pause);
     }
 
     public void addToToolbar(ActionableUi ui) {
@@ -97,20 +60,18 @@ public class Clock {
         ui.addAction("Clock.Speed", this, Actions.SlowDown, () -> slowDown());
         ui.addAction("Clock.Speed", this, Actions.SpeedUp, () -> speedUp());
         actionPublisher.subscribe(ui);
+        disable(Actions.Pause);
     }
 
     public void setSlow() {
-        actionNotify(Actions.Slow);
         setDelay(1000);
     }
 
     public void setMedium() {
-        actionNotify(Actions.Medium);
         setDelay(500);
     }
 
     public void setFast() {
-        actionNotify(Actions.Fast);
         setDelay(100);
     }
 
@@ -136,13 +97,12 @@ public class Clock {
     public void start() {
         // start only if it isn't started already
         if (tick == null) {
-            actionNotify(Actions.Start);
             newTick();
+            disable(Actions.Tick, Actions.Start);
+            enable(Actions.Pause);
         }
 
         tickPublisher.publish(subscriber -> ((TickObserver)subscriber).tick());
-        disable(Actions.Tick, Actions.Start);
-        enable(Actions.Pause);
     }
 
     public void pause() {
@@ -158,11 +118,9 @@ public class Clock {
     public void addObserver(TickObserver observer) {
         tickPublisher.subscribe(observer);
     }
-    public void addObserver(ActionObserver observer) { oldActionPublisher.subscribe(observer); }
 
     private void newTick() {
         if (currentDelay > 0) {
-            actionNotify(Actions.Start);
             tick = new TimerTask() {
                 @Override
                 public void run() {
@@ -185,15 +143,6 @@ public class Clock {
     private void tickAlternativeSyntax() {
         // calls deliverTo method on Publisher.Distributor
         tickPublisher.publish(subscriber -> ((TickObserver)subscriber).tick());
-    }
-
-    private void actionNotify(Actions action) {
-        oldActionPublisher.publish(new Publisher.Distributor() {
-            @Override
-            public void deliverTo(Object subscriber) {
-                ((ActionObserver)subscriber).actionInvoked(action);
-            }
-        });
     }
 
     private void enable(Actions... actions) {
